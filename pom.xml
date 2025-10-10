@@ -5,7 +5,7 @@
     <parent>
         <groupId>guru.nicks.commons</groupId>
         <artifactId>parent</artifactId>
-        <version>0.1.0-alpha.13</version><!-- [BVM] -->
+        <version>0.1.0-alpha.14</version><!-- [BVM] -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -44,6 +44,10 @@
         <dependency>
             <groupId>guru.nicks.commons</groupId>
             <artifactId>utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>guru.nicks.commons</groupId>
+            <artifactId>design-patterns</artifactId>
         </dependency>
         <dependency>
             <groupId>guru.nicks.commons</groupId>

@@ -1,5 +1,6 @@
 package guru.nicks.cucumber;
 
+import guru.nicks.cucumber.world.JwtWorld;
 import guru.nicks.cucumber.world.TextWorld;
 
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -13,7 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 @CucumberContextConfiguration
 @ContextConfiguration(classes = {
         // scenario-scoped states
-        TextWorld.class
+        TextWorld.class, JwtWorld.class
 })
 //@Import(AnnotationAwareAspectJAutoProxyCreator.class) // activate aspects
 public class CucumberBootstrap {
