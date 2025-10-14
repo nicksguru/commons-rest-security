@@ -191,7 +191,7 @@ public class CompositeJwtDecoder implements JwtDecoder {
             /**
              * Key ID is seen as step name during logging.
              */
-            @Getter(onMethod_ = @Override)
+            @Getter // no 'onMethod_ = @Override', otherwise apidocs are not generated
             @NonNull // Lombok creates runtime nullness check for this own annotation only
             private final String name;
 

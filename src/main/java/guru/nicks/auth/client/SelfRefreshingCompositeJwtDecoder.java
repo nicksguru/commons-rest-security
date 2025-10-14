@@ -61,7 +61,7 @@ public class SelfRefreshingCompositeJwtDecoder implements JwtDecoder, AsyncCache
      */
     private final boolean downloadJwkImmediately;
 
-    @Getter(onMethod_ = @Override)
+    @Getter // no 'onMethod_ = @Override', otherwise apidocs are not generated
     private final ScheduledExecutorService cacheRefresherTask = Executors.newSingleThreadScheduledExecutor();
 
     private final Retry jwkRetrier = Resilience4jUtils.createDefaultRetrier(getClass().getName() + " - JWK");
