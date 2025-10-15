@@ -1,4 +1,4 @@
-package guru.nicks.auth.client;
+package guru.nicks.auth.jwt;
 
 import guru.nicks.auth.domain.JwkInfo;
 import guru.nicks.cache.AsyncCacheRefresher;

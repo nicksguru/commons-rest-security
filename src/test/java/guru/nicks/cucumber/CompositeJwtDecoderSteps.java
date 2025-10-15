@@ -1,6 +1,6 @@
 package guru.nicks.cucumber;
 
-import guru.nicks.auth.client.CompositeJwtDecoder;
+import guru.nicks.auth.jwt.CompositeJwtDecoder;
 import guru.nicks.cucumber.world.JwtWorld;
 import guru.nicks.cucumber.world.TextWorld;
 
