@@ -45,6 +45,10 @@
     <dependencies>
         <dependency>
             <groupId>guru.nicks.commons</groupId>
+            <artifactId>rest-dto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>guru.nicks.commons</groupId>
             <artifactId>utils</artifactId>
         </dependency>
         <dependency>
