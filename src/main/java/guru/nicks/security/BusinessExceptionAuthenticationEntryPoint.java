@@ -37,11 +37,12 @@ public class BusinessExceptionAuthenticationEntryPoint implements Authentication
 
     private final BiFunction<? super Throwable, String, ? extends BusinessExceptionDto> exceptionDtoCreator;
     private final Function<BusinessException, HttpStatus> httpStatusCreator;
-    private final boolean hasGlobalBasicAuth;
-    private final ObjectMapper objectMapper;
 
     private final AuthenticationEntryPoint bearerTokenDelegate = new BearerTokenAuthenticationEntryPoint();
     private final AuthenticationEntryPoint basicAuthDelegate;
+
+    private final boolean hasGlobalBasicAuth;
+    private final ObjectMapper objectMapper;
 
     /**
      * Constructor.
