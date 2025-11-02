@@ -1,6 +1,6 @@
 package guru.nicks.security.filter;
 
-import guru.nicks.security.domain.CorsProperties;
+import guru.nicks.auth.domain.CorsProperties;
 import guru.nicks.utils.HttpRequestUtils;
 
 import am.ik.yavi.meta.ConstraintArguments;
