@@ -1,6 +1,5 @@
 package guru.nicks.auth.jwt.pipeline;
 
-import guru.nicks.auth.jwt.JwtAuthPipeline;
 import guru.nicks.utils.JwtUtils;
 
 import lombok.RequiredArgsConstructor;

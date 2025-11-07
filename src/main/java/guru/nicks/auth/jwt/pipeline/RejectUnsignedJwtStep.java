@@ -1,7 +1,5 @@
 package guru.nicks.auth.jwt.pipeline;
 
-import guru.nicks.auth.jwt.JwtAuthPipeline;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.Jwt;

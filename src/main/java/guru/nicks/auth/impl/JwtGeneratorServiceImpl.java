@@ -49,7 +49,7 @@ public class JwtGeneratorServiceImpl implements JwtGeneratorService {
     private final JWSSigner signer;
     private final JWSHeader header;
 
-    @Getter(onMethod_ = @Override)
+    @Getter // no 'onMethod_ = @Override', otherwise apidocs are not generated
     private final JWKSet jwks;
 
     @ConstraintArguments

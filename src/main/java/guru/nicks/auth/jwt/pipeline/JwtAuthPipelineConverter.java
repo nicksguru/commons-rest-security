@@ -1,4 +1,4 @@
-package guru.nicks.auth.jwt;
+package guru.nicks.auth.jwt.pipeline;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

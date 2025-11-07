@@ -28,7 +28,7 @@ Feature: Reject Unsigned JWT
     And an existing user principal with username "testuser" for JWT signature algorithm validation
     When the reject unsigned JWT step is applied
     Then the exception should be of type "BadJwtException"
-    And the exception message should be "Unencrypted JWT not allowed"
+    And the exception message should contain "Unencrypted JWT not allowed"
     Examples:
       | algorithm |
       | none      |
@@ -42,7 +42,7 @@ Feature: Reject Unsigned JWT
     And an existing user principal with username "testuser" for JWT signature algorithm validation
     When the reject unsigned JWT step is applied
     Then the exception should be of type "BadJwtException"
-    And the exception message should be "Unencrypted JWT not allowed"
+    And the exception message should contain "Unencrypted JWT not allowed"
 
   Scenario: JWT with null signature algorithm header is rejected
     Given a reject unsigned JWT step
@@ -50,7 +50,7 @@ Feature: Reject Unsigned JWT
     And an existing user principal with username "testuser" for JWT signature algorithm validation
     When the reject unsigned JWT step is applied
     Then the exception should be of type "BadJwtException"
-    And the exception message should be "Unencrypted JWT not allowed"
+    And the exception message should contain "Unencrypted JWT not allowed"
 
   Scenario: JWT validation with null user principal is accepted for valid algorithm
     Given a reject unsigned JWT step

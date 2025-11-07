@@ -1,4 +1,4 @@
-package guru.nicks.auth.jwt;
+package guru.nicks.auth.jwt.pipeline;
 
 import guru.nicks.designpattern.pipeline.Pipeline;
 import guru.nicks.designpattern.pipeline.PipelineState;

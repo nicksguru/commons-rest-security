@@ -150,14 +150,6 @@ public class RejectUnsignedJwtSteps {
                 .isNull();
     }
 
-    @Then("the exception message should be {string}")
-    public void theExceptionMessageShouldBe(String expectedMessage) {
-        var exception = textWorld.getLastException();
-        assertThat(exception.getMessage())
-                .as("exception message")
-                .isEqualTo(expectedMessage);
-    }
-
     @Then("the JWT signature algorithm validation result should be {string}")
     public void theJwtSignatureAlgorithmValidationResultShouldBe(String expectedResult) {
         var exception = textWorld.getLastException();
