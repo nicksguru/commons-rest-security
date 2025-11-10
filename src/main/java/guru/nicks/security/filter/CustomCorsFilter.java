@@ -1,6 +1,5 @@
 package guru.nicks.security.filter;
 
-import guru.nicks.auth.domain.CorsProperties;
 import guru.nicks.utils.HttpRequestUtils;
 
 import am.ik.yavi.meta.ConstraintArguments;
@@ -25,8 +24,7 @@ import static guru.nicks.validation.dsl.ValiDsl.checkNotNull;
  * This filter does not auto-instantiate itself.
  * <p>
  * Sets {@code Access-Control-Allow-Origin} to the {@code Origin} request header, thus bypassing the '* or one domain'
- * restriction: if there's no {@code Origin} header in request, does nothing because this isn't a cross-domain request;
- * if {@link CorsProperties#getOriginAllowList()} is '*', sets the header to request's {@code Origin}.
+ * restriction. If there's no {@code Origin} header in request, does nothing because this isn't a cross-domain request.
  * <p>
  * It's better to offload {@code OPTIONS} method handling to a proxy (to respond to pre-flight requests sent by browsers
  * before they issue payload-carrying requests). However, this filter is still necessary for post-processing:
