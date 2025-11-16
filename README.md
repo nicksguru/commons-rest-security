@@ -1,6 +1,6 @@
 # [Nicks.Guru](https://nicks.guru) REST Security
 
-<img alt="Latest version" src="https://img.shields.io/maven-central/v/guru.nicks.commons/rest-security?filter=!25*&label=Latest%20version:&cacheSeconds=7200"> <img alt="Release date"  src="https://img.shields.io/maven-central/last-update/guru.nicks.commons/rest-security?label=&cacheSeconds=7200">
+<img alt="Latest version" src="https://img.shields.io/maven-central/v/guru.nicks.commons/rest-security?filter=!25.*&label=Latest%20version:&cacheSeconds=7200"/> <img alt="Release date" src="https://img.shields.io/maven-central/last-update/guru.nicks.commons/rest-security?label=&color=orange&cacheSeconds=7200"/>
 
 REST security helpers.
 
