@@ -21,9 +21,9 @@ import java.util.TreeSet;
  * User profile subset containing Open ID data - typically stored in JWT by auth providers. Contains some of the
  * <a href="https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims">standard claims</a>.
  *
- * @param <R> use role enum type
+ * @param <R> use role type
  */
-public interface OpenIdUserProfile<R extends Enum<R>> extends OpenIdConnectData {
+public interface OpenIdUserProfile<R> extends OpenIdConnectData {
 
     /**
      * This is a local (not OpenID) field actually.
@@ -54,7 +54,7 @@ public interface OpenIdUserProfile<R extends Enum<R>> extends OpenIdConnectData 
     @Value
     @Jacksonized
     @Builder(toBuilder = true)
-    class Impl<R extends Enum<R>> implements OpenIdUserProfile<R> {
+    class Impl<R> implements OpenIdUserProfile<R> {
 
         /**
          * Converter with predictable features crucial for consistent {@link Impl#computeChecksum() checksum}
