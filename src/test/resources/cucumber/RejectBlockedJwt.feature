@@ -50,7 +50,7 @@ Feature: Reject Blocked JWT
       | expired        | expired-token        | exception      |
 
   Scenario: JWT token validation with predicate that always blocks
-    Given a reject blocked JWT step with predicate that always returns true
+    Given a reject blocked JWT step with predicate returning true
     And a JWT token with value "any-token" for JWT block check
     And an existing user principal with username "testuser" for JWT block check
     When the reject blocked JWT step is applied
@@ -58,7 +58,7 @@ Feature: Reject Blocked JWT
     And the exception should be of type "AuthTokenBlockedException" after JWT block check
 
   Scenario: JWT token validation with predicate that never blocks
-    Given a reject blocked JWT step with predicate that always returns false
+    Given a reject blocked JWT step with predicate returning false
     And a JWT token with value "any-token" for JWT block check
     And an existing user principal with username "testuser" for JWT block check
     When the reject blocked JWT step is applied
