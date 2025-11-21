@@ -3,9 +3,9 @@ package guru.nicks.commons.auth.jwt;
 import guru.nicks.commons.auth.domain.JwkInfo;
 import guru.nicks.commons.cache.AsyncCacheRefresher;
 import guru.nicks.commons.cache.CaffeineEntryExpirationCondition;
-import guru.nicks.commons.utils.JwkUtils;
 import guru.nicks.commons.utils.Resilience4jUtils;
-import guru.nicks.commons.utils.TimeUtils;
+import guru.nicks.commons.utils.text.TimeUtils;
+import guru.nicks.commons.utils.json.JwkUtils;
 
 import am.ik.yavi.meta.ConstraintArguments;
 import com.github.benmanes.caffeine.cache.LoadingCache;

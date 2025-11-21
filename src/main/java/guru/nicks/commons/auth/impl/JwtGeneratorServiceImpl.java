@@ -5,10 +5,10 @@ import guru.nicks.commons.auth.domain.CustomJwtClaim;
 import guru.nicks.commons.auth.domain.OAuth2Provider;
 import guru.nicks.commons.auth.service.JwtGeneratorService;
 import guru.nicks.commons.exception.http.UnauthorizedException;
-import guru.nicks.commons.utils.AuthUtils;
-import guru.nicks.commons.utils.JwkUtils;
-import guru.nicks.commons.utils.JwtUtils;
+import guru.nicks.commons.utils.auth.AuthUtils;
 import guru.nicks.commons.utils.UuidUtils;
+import guru.nicks.commons.utils.json.JwkUtils;
+import guru.nicks.commons.utils.json.JwtUtils;
 
 import am.ik.yavi.meta.ConstraintArguments;
 import com.github.f4b6a3.uuid.UuidCreator;

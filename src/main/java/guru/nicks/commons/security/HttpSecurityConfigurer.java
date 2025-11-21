@@ -1,6 +1,6 @@
 package guru.nicks.commons.security;
 
-import guru.nicks.commons.utils.TextUtils;
+import guru.nicks.commons.utils.text.TextUtils;
 
 import am.ik.yavi.meta.ConstraintArguments;
 import com.google.common.collect.ImmutableSortedMap;

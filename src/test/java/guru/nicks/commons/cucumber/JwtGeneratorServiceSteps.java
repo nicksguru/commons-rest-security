@@ -4,9 +4,9 @@ import guru.nicks.commons.auth.domain.CustomJwtClaim;
 import guru.nicks.commons.auth.domain.OAuth2Provider;
 import guru.nicks.commons.auth.impl.JwtGeneratorServiceImpl;
 import guru.nicks.commons.cucumber.world.TextWorld;
-import guru.nicks.commons.utils.AuthUtils;
-import guru.nicks.commons.utils.JwkUtils;
-import guru.nicks.commons.utils.PemUtils;
+import guru.nicks.commons.utils.auth.AuthUtils;
+import guru.nicks.commons.utils.crypto.PemUtils;
+import guru.nicks.commons.utils.json.JwkUtils;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;

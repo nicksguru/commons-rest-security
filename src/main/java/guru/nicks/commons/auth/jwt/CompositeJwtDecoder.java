@@ -5,7 +5,7 @@ import guru.nicks.commons.designpattern.iterator.ThreadSafeListOffsetIterator;
 import guru.nicks.commons.designpattern.pipeline.PipelineState;
 import guru.nicks.commons.designpattern.pipeline.PipelineStep;
 import guru.nicks.commons.designpattern.pipeline.PipelineStepFeature;
-import guru.nicks.commons.utils.TimeUtils;
+import guru.nicks.commons.utils.text.TimeUtils;
 import guru.nicks.commons.utils.TransformUtils;
 
 import jakarta.annotation.Nullable;

@@ -1,6 +1,6 @@
 package guru.nicks.commons.auth.jwt.pipeline;
 
-import guru.nicks.commons.utils.JwtUtils;
+import guru.nicks.commons.utils.json.JwtUtils;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
