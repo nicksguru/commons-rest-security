@@ -15,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.MDC;
@@ -90,8 +91,12 @@ public class LogContextFilterSteps {
 
     @Given("a remote IP {string}")
     public void aRemoteIP(String ip) {
-        when(request.getHeader("X-Real-IP"))
-                .thenReturn(ip);
+        String value = StringUtils.isNotBlank(ip)
+                ? ip.strip()
+                : null;
+
+        when(request.getRemoteAddr())
+                .thenReturn(value);
     }
 
     @Given("an application name {string}")
@@ -155,7 +160,6 @@ public class LogContextFilterSteps {
         LogContext logContext = LogContext.valueOf(contextName);
         assertThat(logContext.find())
                 .as(contextName)
-                .isPresent()
                 .hasValue(expectedValue);
     }
 
