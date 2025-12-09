@@ -68,15 +68,15 @@ public abstract class RestrictUserEmailStep<T> extends JwtAuthPipeline.Step<T> {
     }
 
     protected void checkUserEmail(T userPrincipal) {
-        String email = getUserEmail(userPrincipal);
-
-        if (StringUtils.isBlank(email)) {
-            throw new EmailNotAllowedException("Missing user email address");
-        }
-
         // nothing is allowed
         if (CollectionUtils.isEmpty(allowedEmailPatterns)) {
             throw new EmailNotAllowedException();
+        }
+
+        String email = getUserEmail(userPrincipal);
+        // null can't be passed to Matcher (which may allow empty emails)
+        if (email == null) {
+            email = "";
         }
 
         // don't call error(), as log analyzers would treat it as app error
