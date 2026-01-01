@@ -5,11 +5,9 @@ import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.FieldNameConstants;
 import lombok.experimental.NonFinal;
-import lombok.extern.jackson.Jacksonized;
 
 @Value
 @NonFinal
-@Jacksonized
 @Builder(toBuilder = true)
 @FieldNameConstants
 public class OAuth2Provider {

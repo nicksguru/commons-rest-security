@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.lang.annotation.ElementType;
@@ -52,7 +51,6 @@ public interface OpenIdUserProfile<R> extends OpenIdConnectData {
      *
      */
     @Value
-    @Jacksonized
     @Builder(toBuilder = true)
     class Impl<R> implements OpenIdUserProfile<R> {
 
