@@ -5,8 +5,8 @@ import guru.nicks.commons.auth.domain.CustomJwtClaim;
 import guru.nicks.commons.auth.domain.OAuth2Provider;
 import guru.nicks.commons.auth.service.JwtGeneratorService;
 import guru.nicks.commons.exception.http.UnauthorizedException;
-import guru.nicks.commons.utils.auth.AuthUtils;
 import guru.nicks.commons.utils.UuidUtils;
+import guru.nicks.commons.utils.auth.AuthUtils;
 import guru.nicks.commons.utils.json.JwkUtils;
 import guru.nicks.commons.utils.json.JwtUtils;
 
