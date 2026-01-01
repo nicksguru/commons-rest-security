@@ -217,7 +217,7 @@ public class SelfRefreshingCompositeJwtDecoder implements JwtDecoder, AsyncCache
 
             // create keys in the form: JWT-providerIdN (N = 1, 2, ...)
             publicKeys.forEach(key ->
-                    keys.put("JWT-" + jwk.authProviderId() + i.incrementAndGet(), key));
+                    keys.put("JWT-" + jwk.getAuthProviderId() + i.incrementAndGet(), key));
         });
 
         return keys;
