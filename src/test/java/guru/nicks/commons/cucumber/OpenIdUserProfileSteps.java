@@ -120,13 +120,6 @@ public class OpenIdUserProfileSteps {
                 .computeChecksumSecure();
     }
 
-    @When("fast checksum is computed")
-    public void fastChecksumIsComputed() {
-        computedChecksum = sourceProfile
-                .reduceToBareOpenIdUserProfile()
-                .computeChecksumFast();
-    }
-
     @When("checksums are computed for both profiles")
     public void checksumsAreComputedForBothProfiles() {
         computedChecksum = sourceProfile

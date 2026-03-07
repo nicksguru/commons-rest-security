@@ -120,20 +120,20 @@ public interface OpenIdUserProfile<R extends Comparable<R>> extends OpenIdConnec
          * Encompasses only fields belonging to this class (which is final).
          *
          * @return checksum
-         * @see ChecksumUtils#computeJsonChecksumSecure(Object)
+         * @see ChecksumUtils#computeJsonChecksum(Object)
          */
         public String computeChecksumSecure() {
-            return ChecksumUtils.computeJsonChecksumSecure(this);
+            return ChecksumUtils.computeJsonChecksum(this);
         }
 
         /**
          * Encompasses only fields belonging to this class (which is final).
          *
          * @return checksum
-         * @see ChecksumUtils#computeJsonChecksumFast(Object)
+         * @see ChecksumUtils#computeJsonChecksum(Object)
          */
         public String computeChecksumFast() {
-            return ChecksumUtils.computeJsonChecksumFast(this);
+            return ChecksumUtils.computeJsonChecksum(this);
         }
 
         @Target(ElementType.CONSTRUCTOR)

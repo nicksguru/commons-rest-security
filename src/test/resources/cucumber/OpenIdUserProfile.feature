@@ -81,20 +81,6 @@ Feature: OpenID User Profile
       |               | bob.test | es           | bob@test.com     | true          | Bob       |          |            |                         | ROLE_GUEST           | X6mLa8w1Y0oNGNtFQ95K3g9bC02e9Rw/Rc5UGAx3Kqk= |
       | custom-id-123 | user.one | it           | user@one.com     | true          | User      | One      |            |                         | ROLE_GUEST,ROLE_USER | +mHsR2rLvKBCADlhOeci3dcwhVv+D+9s5mU3bn7gMNE= |
 
-  Scenario Outline: Fast checksum is computed for profile
-    Given user profile data is provided:
-      | id   | username   | languageCode   | email   | emailVerified   | firstName   | lastName   | fullName   | pictureLink   | roles   |
-      | <id> | <username> | <languageCode> | <email> | <emailVerified> | <firstName> | <lastName> | <fullName> | <pictureLink> | <roles> |
-    When fast checksum is computed
-    Then checksum should be "<expectedChecksum>"
-    Examples:
-      | id            | username | languageCode | email            | emailVerified | firstName | lastName | fullName   | pictureLink             | roles                | expectedChecksum                             |
-      | user123       | john.doe | en           | john@example.com | true          | John      | Doe      | John Doe   | https://example.com/pic | ROLE_USER            | VVvvx2WNruv6v+HbZLDm+Y0n/uJvIiUoiizza1pqWo8= |
-      | user456       | jane.doe | fr           | jane@example.com | false         | Jane      | Smith    | Jane Smith |                         | ROLE_ADMIN           | k61CG0K4uMY9msm2wswtqsuWLUzNUsN/kC8RXIq/720= |
-      | user789       |          | de           |                  | false         |           |          |            |                         |                      | YqD3uQxXYP6LM3cD8QDpnGQ9FhpC65gDCGQxaJ/hjIg= |
-      |               | bob.test | es           | bob@test.com     | true          | Bob       |          |            |                         | ROLE_GUEST           | aPsAhb4BxjC7JfD4Li/ePdI1Pihu6yVKy3wVQW3TR8E= |
-      | custom-id-123 | user.one | it           | user@one.com     | true          | User      | One      |            |                         | ROLE_GUEST,ROLE_USER | 9ZSeSk1jap5ojH0gtpOTWsdv+AKcMPblQGY9V0gzn2M= |
-
   Scenario Outline: Identical profiles produce same checksum
     Given user profile data is provided:
       | id   | username   | languageCode   | email   | emailVerified   | firstName   | lastName   | fullName   | pictureLink   | roles   |
