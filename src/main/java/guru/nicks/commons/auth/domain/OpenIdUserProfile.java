@@ -1,19 +1,18 @@
 package guru.nicks.commons.auth.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import guru.nicks.commons.utils.crypto.ChecksumUtils;
+
 import lombok.Builder;
 import lombok.Value;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
@@ -22,7 +21,7 @@ import java.util.TreeSet;
  *
  * @param <R> use role type
  */
-public interface OpenIdUserProfile<R> extends OpenIdConnectData {
+public interface OpenIdUserProfile<R extends Comparable<R>> extends OpenIdConnectData {
 
     /**
      * This is a local (not OpenID) field actually.
@@ -52,19 +51,7 @@ public interface OpenIdUserProfile<R> extends OpenIdConnectData {
      */
     @Value
     @Builder(toBuilder = true)
-    class Impl<R> implements OpenIdUserProfile<R> {
-
-        /**
-         * Converter with predictable features crucial for consistent {@link Impl#computeChecksum() checksum}
-         * computation. JSON keys are always sorted - to avoid checksum differences caused by random key order. Also,
-         * dates are written as timestamps, for consistency. {@link ObjectMapper} bean is not used because it may or may
-         * not be configured to sort keys.
-         */
-        private static final ObjectMapper KEY_SORTING_OBJECT_MAPPER = new ObjectMapper()
-                // sort keys in JSON to render unsorted maps, such as HashMap, in consistent order
-                .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
-                // process Java 8 dates
-                .registerModule(new JavaTimeModule());
+    class Impl<R extends Comparable<R>> implements OpenIdUserProfile<R> {
 
         String id;
         String username;
@@ -78,7 +65,7 @@ public interface OpenIdUserProfile<R> extends OpenIdConnectData {
         String fullName;
 
         String pictureLink;
-        Set<R> roles;
+        SortedSet<R> roles;
 
         // Constructor must be annotated with @Default (in any package) for MapStruct to prefer it over the copy
         // constructor. Lombok can't be used because '@AllArgsConstructor(onConstructor = @Default)' makes Javadoc
@@ -100,46 +87,54 @@ public interface OpenIdUserProfile<R> extends OpenIdConnectData {
             this.fullName = fullName;
 
             this.pictureLink = pictureLink;
-            this.roles = roles;
-        }
 
-        public Impl(OpenIdUserProfile<R> parent) {
-            id = parent.getId();
-            username = parent.getUsername();
-            languageCode = parent.getLanguageCode();
-
-            email = parent.getEmail();
-            emailVerified = parent.isEmailVerified();
-
-            firstName = parent.getFirstName();
-            lastName = parent.getLastName();
-            fullName = parent.getFullName();
-
-            pictureLink = parent.getPictureLink();
-
-            // ensure consistent element order for checksum computation
-            roles = Optional.ofNullable(parent.getRoles())
+            // ensure consistent element order and non-nullness for checksum computation
+            var tmpRoles = Optional.ofNullable(roles)
                     .map(TreeSet::new)
                     .orElseGet(TreeSet::new);
+            this.roles = Collections.unmodifiableSortedSet(tmpRoles);
+        }
+
+        public Impl(OpenIdUserProfile<R> source) {
+            id = source.getId();
+            username = source.getUsername();
+            languageCode = source.getLanguageCode();
+
+            email = source.getEmail();
+            emailVerified = source.isEmailVerified();
+
+            firstName = source.getFirstName();
+            lastName = source.getLastName();
+            fullName = source.getFullName();
+
+            pictureLink = source.getPictureLink();
+
+            // ensure consistent element order and non-nullness for checksum computation
+            var tmpRoles = Optional.ofNullable(source.getRoles())
+                    .map(TreeSet::new)
+                    .orElseGet(TreeSet::new);
+            roles = Collections.unmodifiableSortedSet(tmpRoles);
         }
 
         /**
          * Encompasses only fields belonging to this class (which is final).
          *
          * @return checksum
+         * @see ChecksumUtils#computeJsonChecksumSecure(Object)
          */
-        public String computeChecksum() {
-            String json;
-
-            try {
-                json = KEY_SORTING_OBJECT_MAPPER.writeValueAsString(this);
-            } catch (JsonProcessingException e) {
-                throw new IllegalArgumentException("Failed to serialize to JSON: " + e.getMessage(), e);
-            }
-
-            return DigestUtils.sha256Hex(json);
+        public String computeChecksumSecure() {
+            return ChecksumUtils.computeJsonChecksumSecure(this);
         }
 
+        /**
+         * Encompasses only fields belonging to this class (which is final).
+         *
+         * @return checksum
+         * @see ChecksumUtils#computeJsonChecksumFast(Object)
+         */
+        public String computeChecksumFast() {
+            return ChecksumUtils.computeJsonChecksumFast(this);
+        }
 
         @Target(ElementType.CONSTRUCTOR)
         @Retention(RetentionPolicy.CLASS)
