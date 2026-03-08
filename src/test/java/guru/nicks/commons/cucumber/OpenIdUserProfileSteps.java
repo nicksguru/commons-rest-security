@@ -110,29 +110,29 @@ public class OpenIdUserProfileSteps {
     public void checksumIsComputed() {
         computedChecksum = sourceProfile
                 .reduceToBareOpenIdUserProfile()
-                .computeChecksumSecure();
+                .computeChecksum();
     }
 
     @When("secure checksum is computed")
     public void secureChecksumIsComputed() {
         computedChecksum = sourceProfile
                 .reduceToBareOpenIdUserProfile()
-                .computeChecksumSecure();
+                .computeChecksum();
     }
 
     @When("checksums are computed for both profiles")
     public void checksumsAreComputedForBothProfiles() {
         computedChecksum = sourceProfile
                 .reduceToBareOpenIdUserProfile()
-                .computeChecksumSecure();
+                .computeChecksum();
         secondChecksum = secondSourceProfile
                 .reduceToBareOpenIdUserProfile()
-                .computeChecksumSecure();
+                .computeChecksum();
     }
 
     @When("second checksum is computed")
     public void secondChecksumIsComputed() {
-        secondChecksum = reducedProfile.computeChecksumSecure();
+        secondChecksum = reducedProfile.computeChecksum();
     }
 
     @When("profile is copied using toBuilder")
