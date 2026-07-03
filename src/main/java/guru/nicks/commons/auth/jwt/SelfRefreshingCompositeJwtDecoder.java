@@ -14,6 +14,7 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.event.RetryOnErrorEvent;
 import io.github.resilience4j.retry.event.RetryOnRetryEvent;
 import jakarta.annotation.Nullable;
+import jakarta.annotation.PreDestroy;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -296,6 +297,30 @@ public class SelfRefreshingCompositeJwtDecoder implements JwtDecoder, AsyncCache
                 // goes to logger implicitly, for stack trace
                 event.getLastThrowable());
         alerter.accept(event.getLastThrowable());
+    }
+
+    /**
+     * Shuts down the scheduled executor service when the bean is destroyed.
+     */
+    @PreDestroy
+    public void shutdown() {
+        log.info("Shutting down JWT decoder cache refresher task");
+        cacheRefresherTask.shutdown();
+
+        try {
+            if (!cacheRefresherTask.awaitTermination(5, TimeUnit.SECONDS)) {
+                log.warn("Executor did not terminate in 5 seconds, forcing shutdown");
+                cacheRefresherTask.shutdownNow();
+
+                if (!cacheRefresherTask.awaitTermination(5, TimeUnit.SECONDS)) {
+                    log.error("Executor did not terminate after forced shutdown");
+                }
+            }
+        } catch (InterruptedException e) {
+            log.error("Interrupted during executor shutdown: {}", e.getMessage(), e);
+            cacheRefresherTask.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
 }
