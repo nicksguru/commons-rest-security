@@ -2,7 +2,7 @@ package guru.nicks.commons.security;
 
 import guru.nicks.commons.exception.BusinessException;
 import guru.nicks.commons.exception.http.UnauthorizedException;
-import guru.nicks.commons.rest.v1.dto.BusinessExceptionDto;
+import guru.nicks.commons.rest.dto.BusinessExceptionDto;
 
 import am.ik.yavi.meta.ConstraintArguments;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +35,7 @@ public class BusinessExceptionAuthenticationEntryPoint implements Authentication
     private static final String ACTUATOR_BASE_PATH = "/actuator";
     private static final String ACTUATOR_PATH_PREFIX = ACTUATOR_BASE_PATH + "/";
 
-    private final BiFunction<? super Throwable, String, ? extends BusinessExceptionDto> exceptionDtoCreator;
+    private final BiFunction<? super Throwable, String, BusinessExceptionDto> exceptionDtoCreator;
     private final Function<BusinessException, HttpStatus> httpStatusCreator;
 
     private final AuthenticationEntryPoint bearerTokenDelegate = new BearerTokenAuthenticationEntryPoint();
@@ -54,7 +54,7 @@ public class BusinessExceptionAuthenticationEntryPoint implements Authentication
      */
     @ConstraintArguments
     public BusinessExceptionAuthenticationEntryPoint(
-            BiFunction<? super Throwable, String, ? extends BusinessExceptionDto> exceptionDtoCreator,
+            BiFunction<? super Throwable, String, BusinessExceptionDto> exceptionDtoCreator,
             Function<BusinessException, HttpStatus> httpStatusCreator,
             ObjectMapper objectMapper,
             String basicAuthRealm, boolean hasGlobalBasicAuth) {
