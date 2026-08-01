@@ -8,7 +8,7 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.SortedSet;
+import java.util.Set;
 
 /**
  * Domain-specific state shared between scenario steps. Thanks to {@link ScenarioScope @ScenarioScope}, each scenario
@@ -22,7 +22,7 @@ public class UserPrincipalWorld {
     private String username;
     private String password;
 
-    private SortedSet<TestUserRole> roles;
+    private Set<TestUserRole> roles;
     private Map<String, Object> attributes;
 
     private String id;

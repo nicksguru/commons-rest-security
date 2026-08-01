@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -391,7 +390,7 @@ public class OpenIdUserProfileSteps {
         return OpenIdUserProfile.Impl.<String>builder()
                 .id(data.getId())
                 .username(data.getUsername())
-                .languageCode(data.getLanguageCode())
+                .roles(data.getRoles())
                 //
                 .email(data.getEmail())
                 .emailVerified(data.isEmailVerified())
@@ -400,20 +399,19 @@ public class OpenIdUserProfileSteps {
                 .lastName(data.getLastName())
                 .fullName(data.getFullName())
                 //
+                .languageCode(data.getLanguageCode())
                 .pictureLink(data.getPictureLink())
-                .roles(data.getRoles())
                 .build();
     }
 
-    private SortedSet<String> parseRoles(String rolesStr) {
+    private Set<String> parseRoles(String rolesStr) {
         if (StringUtils.isBlank(rolesStr)) {
             return null;
         }
 
-        return new TreeSet<>(Arrays.asList(rolesStr.split(",")))
-                .stream()
+        return Arrays.stream(rolesStr.split(","))
                 .map(StringUtils::stripToNull)
-                .collect(Collectors.toCollection(TreeSet::new));
+                .collect(Collectors.toSet());
     }
 
     @Getter
@@ -422,7 +420,7 @@ public class OpenIdUserProfileSteps {
 
         private String id;
         private String username;
-        private String languageCode;
+        private Set<String> roles;
 
         private String email;
         private boolean emailVerified;
@@ -431,8 +429,8 @@ public class OpenIdUserProfileSteps {
         private String lastName;
         private String fullName;
 
+        private String languageCode;
         private String pictureLink;
-        private SortedSet<String> roles;
 
     }
 

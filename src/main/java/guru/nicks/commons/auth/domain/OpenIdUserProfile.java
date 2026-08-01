@@ -9,8 +9,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -43,7 +43,7 @@ public interface OpenIdUserProfile<R extends Comparable<R>> extends OpenIdConnec
     /**
      * Implementation for reducing other objects that implement {@link OpenIdUserProfile} to that interface's scope .
      * Needed for compact JSON serialization (to exclude additional fields) and limiting checksum computation to such
-     * fields only.
+     * fields only. The roles are sorted by the constructor to ensure consistent order for checksum computation.
      * <p>
      * WARNING: this class must be final to avoid mentioning any extra fields in JSON representation which is a source
      * for checksum computation.
@@ -71,10 +71,11 @@ public interface OpenIdUserProfile<R extends Comparable<R>> extends OpenIdConnec
         // constructor. Lombok can't be used because '@AllArgsConstructor(onConstructor = @Default)' makes Javadoc
         // plugin crash.
         @Default
+        @SuppressWarnings("java:S107") // allow more than 7 parameters
         public Impl(String id, String username, String languageCode,
                 String email, boolean emailVerified,
                 String firstName, String lastName, String fullName,
-                String pictureLink, Set<R> roles) {
+                String pictureLink, Collection<R> roles) {
             this.id = id;
             this.username = username;
             this.languageCode = languageCode;
@@ -89,10 +90,11 @@ public interface OpenIdUserProfile<R extends Comparable<R>> extends OpenIdConnec
             this.pictureLink = pictureLink;
 
             // ensure consistent element order and non-nullness for checksum computation
-            var tmpRoles = Optional.ofNullable(roles)
-                    .map(TreeSet::new)
-                    .orElseGet(TreeSet::new);
-            this.roles = Collections.unmodifiableSortedSet(tmpRoles);
+            this.roles = (roles == null)
+                    ? Collections.emptySortedSet()
+                    : (roles instanceof SortedSet<R> s)
+                            ? Collections.unmodifiableSortedSet(s)
+                            : Collections.unmodifiableSortedSet(new TreeSet<>(roles));
         }
 
         public Impl(OpenIdUserProfile<R> source) {
@@ -110,10 +112,11 @@ public interface OpenIdUserProfile<R extends Comparable<R>> extends OpenIdConnec
             pictureLink = source.getPictureLink();
 
             // ensure consistent element order and non-nullness for checksum computation
-            var tmpRoles = Optional.ofNullable(source.getRoles())
-                    .map(TreeSet::new)
-                    .orElseGet(TreeSet::new);
-            roles = Collections.unmodifiableSortedSet(tmpRoles);
+            roles = (source.getRoles() == null)
+                    ? Collections.emptySortedSet()
+                    : (source.getRoles() instanceof SortedSet<R> s)
+                            ? Collections.unmodifiableSortedSet(s)
+                            : Collections.unmodifiableSortedSet(new TreeSet<>(source.getRoles()));
         }
 
         /**
@@ -129,6 +132,23 @@ public interface OpenIdUserProfile<R extends Comparable<R>> extends OpenIdConnec
         @Target(ElementType.CONSTRUCTOR)
         @Retention(RetentionPolicy.CLASS)
         public @interface Default {
+        }
+
+        public static class ImplBuilder<R extends Comparable<R>> {
+
+            /**
+             * Custom builder method that sorts roles before storing them. This overrides the Lombok-generated roles
+             * method to ensure consistent role ordering for checksum computation.
+             *
+             * @param roles collection of roles
+             * @return this builder instance
+             */
+            public ImplBuilder<R> roles(Collection<R> roles) {
+                this.roles = (roles == null)
+                        ? null
+                        : Collections.unmodifiableSortedSet(new TreeSet<>(roles));
+                return this;
+            }
         }
 
     }

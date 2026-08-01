@@ -14,12 +14,17 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.authentication.JwtBearerTokenAuthenticationConverter;
 
+import java.util.LinkedHashMap;
+
 import static guru.nicks.commons.validation.dsl.ValiDsl.checkNotNull;
 
 /**
  * Converts JWT to {@link Authentication} holding {@link OAuth2AuthenticatedPrincipal} or its subclass. Resembles
  * Spring's native {@link JwtBearerTokenAuthenticationConverter} but uses another user principal class and leverages
  * {@link JwtAuthPipeline}.
+ * <p>
+ * WARNING: {@link OAuth2AuthenticatedPrincipal#getAttributes()} must not be null, or {@link BearerTokenAuthentication}
+ * crashes (it creates a {@link LinkedHashMap} out of them).
  *
  * @see HttpSecurityConfigurer#withJwtAuthentication(Converter)
  */

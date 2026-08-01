@@ -58,8 +58,8 @@ Feature: CommonsUserPrincipal
     When a user principal is created
     Then the user principal username should be "jane.doe"
     And the user principal password should be empty
-    And the user principal roles should be empty
-    And the user principal attributes should be empty
+    And the user principal roles should be null
+    And the user principal attributes should be null
     And the user principal ID should be "67890"
     And the user principal email should be "jane@example.com"
     And the user principal email verified should be false

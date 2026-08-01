@@ -150,20 +150,27 @@ public class CommonsUserPrincipalSteps {
 
     @When("a user principal is created")
     public void aUserPrincipalIsCreated() {
-        userPrincipalWorld.setUserPrincipal(new CommonsUserPrincipal<>(
-                userPrincipalWorld.getUsername(), userPrincipalWorld.getPassword(),
-                userPrincipalWorld.getRoles(), userPrincipalWorld.getAttributes(),
-                userPrincipalWorld.getId(), userPrincipalWorld.getEmail(), userPrincipalWorld.getEmailVerified(),
-                userPrincipalWorld.getJwtProvider(), userPrincipalWorld.getLanguageCode(),
-                userPrincipalWorld.getFirstName(), userPrincipalWorld.getLastName(), userPrincipalWorld.getFullName(),
-                userPrincipalWorld.getPictureLink()
-        ));
+        userPrincipalWorld.setUserPrincipal(CommonsUserPrincipal.<TestUserRole>builder()
+                .username(userPrincipalWorld.getUsername())
+                .password(userPrincipalWorld.getPassword())
+                .roles(userPrincipalWorld.getRoles())
+                .attributes(userPrincipalWorld.getAttributes())
+                .id(userPrincipalWorld.getId())
+                .email(userPrincipalWorld.getEmail())
+                .emailVerified(userPrincipalWorld.getEmailVerified())
+                .jwtProvider(userPrincipalWorld.getJwtProvider())
+                .languageCode(userPrincipalWorld.getLanguageCode())
+                .firstName(userPrincipalWorld.getFirstName())
+                .lastName(userPrincipalWorld.getLastName())
+                .fullName(userPrincipalWorld.getFullName())
+                .pictureLink(userPrincipalWorld.getPictureLink())
+                .build());
     }
 
     @When("a copy is made using the copy constructor")
     public void aCopyIsMadeUsingTheCopyConstructor() {
-        userPrincipalWorld.setCopiedUserPrincipal(
-                new CommonsUserPrincipal<>(userPrincipalWorld.getUserPrincipal()));
+        var copy = (CommonsUserPrincipal<TestUserRole>) userPrincipalWorld.getUserPrincipal().toBuilder().build();
+        userPrincipalWorld.setCopiedUserPrincipal(copy);
     }
 
     @Then("the user principal username should be {string}")
@@ -196,11 +203,11 @@ public class CommonsUserPrincipalSteps {
                         .collect(Collectors.toCollection(TreeSet::new)));
     }
 
-    @Then("the user principal roles should be empty")
-    public void theUserPrincipalRolesShouldBeEmpty() {
+    @Then("the user principal roles should be null")
+    public void theUserPrincipalRolesShouldBeNull() {
         assertThat(userPrincipalWorld.getUserPrincipal().getRoles())
                 .as("user principal roles")
-                .isEmpty();
+                .isNull();
     }
 
     @Then("the user principal attributes should be:")
@@ -210,11 +217,11 @@ public class CommonsUserPrincipalSteps {
                 .isEqualTo(new LinkedHashMap<>(expectedAttributes));
     }
 
-    @Then("the user principal attributes should be empty")
-    public void theUserPrincipalAttributesShouldBeEmpty() {
+    @Then("the user principal attributes should be null")
+    public void theUserPrincipalAttributesShouldBeNull() {
         assertThat(userPrincipalWorld.getUserPrincipal().getAttributes())
                 .as("user principal attributes")
-                .isEmpty();
+                .isNull();
     }
 
     @Then("the user principal ID should be {string}")
