@@ -1,4 +1,4 @@
-#@disabled
+@security #@disabled
 Feature: Restrict JWT Audience
   JWT audience restriction validates AZP/AUD claims and throws BadJwtException for unauthorized audiences
 

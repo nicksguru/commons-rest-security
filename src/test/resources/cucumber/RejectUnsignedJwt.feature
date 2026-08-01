@@ -1,4 +1,4 @@
-#@disabled
+@security #@disabled
 Feature: Reject Unsigned JWT
   JWT signature algorithm validation rejects unsigned tokens and allows signed tokens
 

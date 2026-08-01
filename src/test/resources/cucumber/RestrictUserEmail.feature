@@ -1,4 +1,4 @@
-#@disabled
+@security #@disabled
 Feature: Restrict User Email
 
   Scenario Outline: User email is checked against an allow-list

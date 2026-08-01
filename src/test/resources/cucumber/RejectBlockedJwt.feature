@@ -1,4 +1,4 @@
-#@disabled
+@security #@disabled
 Feature: Reject Blocked JWT
   JWT token blocking validation rejects blocked tokens and allows non-blocked tokens
 

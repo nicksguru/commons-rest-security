@@ -1,4 +1,4 @@
-#@disabled
+@security #@disabled
 Feature: Restrict Username
 
   Scenario Outline: Username is checked against a deny-list

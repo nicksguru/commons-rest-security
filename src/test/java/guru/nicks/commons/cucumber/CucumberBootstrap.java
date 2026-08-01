@@ -2,6 +2,7 @@ package guru.nicks.commons.cucumber;
 
 import guru.nicks.commons.cucumber.world.JwtWorld;
 import guru.nicks.commons.cucumber.world.TextWorld;
+import guru.nicks.commons.cucumber.world.UserPrincipalWorld;
 import guru.nicks.commons.listener.ApplicationContextHolderListener;
 
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -15,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 @CucumberContextConfiguration
 @ContextConfiguration(classes = {
         // scenario-scoped states
-        TextWorld.class, JwtWorld.class,
+        TextWorld.class, JwtWorld.class, UserPrincipalWorld.class,
         // Spring beans
         ApplicationContextHolderListener.class
 })
