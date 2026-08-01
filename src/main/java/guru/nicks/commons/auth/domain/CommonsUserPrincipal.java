@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
@@ -18,7 +19,6 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.SequencedSet;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -106,22 +106,25 @@ public class CommonsUserPrincipal<R extends Enum<R>>
     private final JwtProvider jwtProvider;
 
     /**
-     * Arbitrary attributes, such as JWT claims. Immutable or {@code null}.
+     * Arbitrary attributes, such as JWT claims. Immutable, never {@code null}.
      */
     @Getter(onMethod_ = @Override)
     private final Map<String, Object> attributes;
 
     /**
-     * User roles (will be sorted, for predictable iteration order). Immutable or {@code null}.
+     * User roles (will be sorted, for predictable iteration order). Immutable, never {@code null}.
      */
     @Getter(onMethod_ = @Override)
     private final SortedSet<R> roles;
 
     /**
-     * Granted authorities derived from roles. Immutable or {@code null}.
+     * Granted authorities derived from roles. Immutable. Never {@code null}, as per
+     * {@link UserDetails#getAuthorities()} contract. Not sorted dynamically because {@link SimpleGrantedAuthority} is
+     * not {@link Comparable}, but the element order is usually the same as in {@link #getRoles()} because this property
+     * is auto-updated.
      */
     @Getter(onMethod_ = @Override)
-    private final Set<GrantedAuthority> authorities;
+    private final SequencedSet<GrantedAuthority> authorities;
 
     /**
      * For {@link UserDetails#isAccountNonExpired()}. Default is {@code true}.
@@ -181,7 +184,7 @@ public class CommonsUserPrincipal<R extends Enum<R>>
     }
 
     /**
-     * Custom builder methods to sort roles and authorities before storing them.
+     * Custom builder methods.
      */
     @SuppressWarnings("UnusedReturnValue") // OK for builders
     public abstract static class CommonsUserPrincipalBuilder<
@@ -190,16 +193,14 @@ public class CommonsUserPrincipal<R extends Enum<R>>
             B extends CommonsUserPrincipalBuilder<R, C, B>> {
 
         /**
-         * Replaces null password with empty string to follow the behavior of {@link User} class.
-         *
-         * @param password password
-         * @return this builder instance
+         * Custom constructor to ensure that all non-nullable fields are initialized to non-nulls (e.g. empty
+         * collection). Later on, setter methods (which may or may not be called) in this builder will convert null
+         * arguments to empty collections.
          */
-        public B password(String password) {
-            this.password = (password == null)
-                    ? ""
-                    : password;
-            return self();
+        protected CommonsUserPrincipalBuilder() {
+            roles = Collections.emptySortedSet();
+            authorities = Collections.emptyNavigableSet();
+            attributes = Collections.emptyMap();
         }
 
         /**
@@ -212,21 +213,18 @@ public class CommonsUserPrincipal<R extends Enum<R>>
         public B roles(Collection<R> roles) {
             // must never be null
             this.roles = (roles == null)
-                    ? null
+                    ? Collections.emptySortedSet()
                     : (roles instanceof SortedSet<R> s)
                             ? Collections.unmodifiableSortedSet(s)
                             : Collections.unmodifiableSortedSet(new TreeSet<>(roles));
 
-            // derive authorities from roles (sort by name because SimpleGrantedAuthority is not Comparable)
-            if (this.roles == null) {
-                authorities(null);
-            } else {
-                authorities(AuthorityUtils.createAuthorityList(
-                        this.roles.stream()
-                                .map(R::name)
-                                .sorted()
-                                .toList()));
-            }
+            // derive authorities from roles
+            authorities(AuthorityUtils.createAuthorityList(
+                    this.roles.stream()
+                            // sort by name because SimpleGrantedAuthority is not Comparable
+                            .map(R::name)
+                            .sorted()
+                            .toList()));
 
             return self();
         }
@@ -242,7 +240,7 @@ public class CommonsUserPrincipal<R extends Enum<R>>
         public B authorities(Collection<GrantedAuthority> authorities) {
             // must never be null
             this.authorities = (authorities == null)
-                    ? null
+                    ? Collections.emptyNavigableSet()
                     : (authorities instanceof SequencedSet<GrantedAuthority> s)
                             ? Collections.unmodifiableSequencedSet(s)
                             : Collections.unmodifiableSequencedSet(new LinkedHashSet<>(authorities));
@@ -257,7 +255,7 @@ public class CommonsUserPrincipal<R extends Enum<R>>
          */
         public B attributes(Map<String, Object> attributes) {
             this.attributes = (attributes == null)
-                    ? null
+                    ? Collections.emptyMap()
                     : Collections.unmodifiableMap(attributes);
             return self();
         }

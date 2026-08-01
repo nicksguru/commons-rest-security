@@ -187,11 +187,11 @@ public class CommonsUserPrincipalSteps {
                 .isEqualTo("empty".equals(password) ? "" : password);
     }
 
-    @Then("the user principal password should be empty")
-    public void theUserPrincipalPasswordShouldBeEmpty() {
+    @Then("the user principal password should be null")
+    public void theUserPrincipalPasswordShouldBeNull() {
         assertThat(userPrincipalWorld.getUserPrincipal().getPassword())
                 .as("user principal password")
-                .isEmpty();
+                .isNull();
     }
 
     @Then("the user principal roles should be:")
@@ -203,11 +203,11 @@ public class CommonsUserPrincipalSteps {
                         .collect(Collectors.toCollection(TreeSet::new)));
     }
 
-    @Then("the user principal roles should be null")
-    public void theUserPrincipalRolesShouldBeNull() {
+    @Then("the user principal roles should be empty")
+    public void theUserPrincipalRolesShouldBeEmpty() {
         assertThat(userPrincipalWorld.getUserPrincipal().getRoles())
                 .as("user principal roles")
-                .isNull();
+                .isEmpty();
     }
 
     @Then("the user principal attributes should be:")
@@ -217,11 +217,18 @@ public class CommonsUserPrincipalSteps {
                 .isEqualTo(new LinkedHashMap<>(expectedAttributes));
     }
 
-    @Then("the user principal attributes should be null")
-    public void theUserPrincipalAttributesShouldBeNull() {
+    @Then("the user principal authorities should be empty")
+    public void theUserPrincipalAuthoritiesShouldBeEmpty() {
+        assertThat(userPrincipalWorld.getUserPrincipal().getAuthorities())
+                .as("user principal authorities")
+                .isEmpty();
+    }
+
+    @Then("the user principal attributes should be empty")
+    public void theUserPrincipalAttributesShouldBeEmpty() {
         assertThat(userPrincipalWorld.getUserPrincipal().getAttributes())
                 .as("user principal attributes")
-                .isNull();
+                .isEmpty();
     }
 
     @Then("the user principal ID should be {string}")
