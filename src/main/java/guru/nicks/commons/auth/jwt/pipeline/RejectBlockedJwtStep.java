@@ -22,11 +22,11 @@ public class RejectBlockedJwtStep<T> extends JwtAuthPipeline.Step<T> {
      * Accepts JWT value as a string, returns {@code true} if it's blocked.
      */
     @NonNull // Lombok creates runtime nullness check for this own annotation only
-    private final Predicate<String> isBlockedToken;
+    private final Predicate<Jwt> isBlockedToken;
 
     @Override
     public T apply(Jwt jwt, T userPrincipal) {
-        if (isBlockedToken.test(jwt.getTokenValue())) {
+        if (isBlockedToken.test(jwt)) {
             throw new AuthTokenBlockedException();
         }
 

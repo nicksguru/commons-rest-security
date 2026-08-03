@@ -6,13 +6,10 @@ import guru.nicks.commons.exception.auth.AuthTokenBlockedException;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,12 +19,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,38 +41,14 @@ public class RejectBlockedJwtSteps {
     @Mock
     private Jwt mockJwt;
     @Spy
-    private Predicate<String> spyPredicate;
+    private Predicate<Jwt> spyPredicate;
     private AutoCloseable closeableMocks;
 
     private RejectBlockedJwtStep<UserDetails> rejectBlockedJwtStep;
     private UserDetails inputUserPrincipal;
     private UserDetails resultUserPrincipal;
 
-    private Predicate<String> isBlockedTokenPredicate;
-
-    @DataTableType
-    public BlockingConfig createBlockingConfig(Map<String, String> entry) {
-        return BlockingConfig.builder()
-                .tokenValue(StringUtils.isNotBlank(entry.get("tokenValue"))
-                        ? entry.get("tokenValue")
-                        : null)
-                .username(StringUtils.isNotBlank(entry.get("username"))
-                        ? entry.get("username")
-                        : null)
-                .id(StringUtils.isNotBlank(entry.get("id"))
-                        ? entry.get("id")
-                        : null)
-                .expectedResult(StringUtils.isNotBlank(entry.get("expectedResult"))
-                        ? entry.get("expectedResult")
-                        : null)
-                .blockedPattern(StringUtils.isNotBlank(entry.get("blockedPattern"))
-                        ? entry.get("blockedPattern")
-                        : null)
-                .predicateResult(StringUtils.isNotBlank(entry.get("predicateResult"))
-                        ? Boolean.parseBoolean(entry.get("predicateResult"))
-                        : false)
-                .build();
-    }
+    private Predicate<Jwt> isBlockedTokenPredicate;
 
     @Before
     public void beforeEachScenario() {
@@ -90,36 +63,35 @@ public class RejectBlockedJwtSteps {
     @Given("a reject blocked JWT step with predicate returning true")
     public void aRejectBlockedJwtStepWithPredicateReturningTrue() {
         isBlockedTokenPredicate = token -> true;
-        rejectBlockedJwtStep = new RejectBlockedJwtStep(isBlockedTokenPredicate);
+        rejectBlockedJwtStep = new RejectBlockedJwtStep<>(isBlockedTokenPredicate);
     }
 
     @Given("a reject blocked JWT step with predicate returning false")
     public void aRejectBlockedJwtStepWithPredicateReturningFalse() {
         isBlockedTokenPredicate = token -> false;
-        rejectBlockedJwtStep = new RejectBlockedJwtStep(isBlockedTokenPredicate);
+        rejectBlockedJwtStep = new RejectBlockedJwtStep<>(isBlockedTokenPredicate);
     }
 
     @Given("a reject blocked JWT step with predicate that blocks tokens containing {string}")
     public void aRejectBlockedJwtStepWithPredicateThatBlocksTokensContaining(String blockedPattern) {
-        isBlockedTokenPredicate = token ->
-                (token != null) && token.contains(blockedPattern);
-        rejectBlockedJwtStep = new RejectBlockedJwtStep(isBlockedTokenPredicate);
+        isBlockedTokenPredicate = jwt ->
+                (jwt != null) && jwt.getTokenValue().contains(blockedPattern);
+        rejectBlockedJwtStep = new RejectBlockedJwtStep<>(isBlockedTokenPredicate);
     }
 
     @Given("a reject blocked JWT step with predicate that blocks empty or null tokens")
     public void aRejectBlockedJwtStepWithPredicateThatBlocksEmptyOrNullTokens() {
-        isBlockedTokenPredicate = token ->
-                (token == null) || token.isEmpty();
-        rejectBlockedJwtStep = new RejectBlockedJwtStep(isBlockedTokenPredicate);
+        isBlockedTokenPredicate = jwt -> jwt == null || StringUtils.isBlank(jwt.getTokenValue());
+        rejectBlockedJwtStep = new RejectBlockedJwtStep<>(isBlockedTokenPredicate);
     }
 
     @Given("a reject blocked JWT step with spy predicate returning false")
     public void aRejectBlockedJwtStepWithSpyPredicateReturningFalse() {
         spyPredicate = spy(Predicate.class);
-        when(spyPredicate.test(anyString()))
+        when(spyPredicate.test(any(Jwt.class)))
                 .thenReturn(false);
 
-        rejectBlockedJwtStep = new RejectBlockedJwtStep(spyPredicate);
+        rejectBlockedJwtStep = new RejectBlockedJwtStep<>(spyPredicate);
     }
 
     @Given("a JWT token with value {string} for JWT block check")
@@ -206,14 +178,15 @@ public class RejectBlockedJwtSteps {
 
     @Then("the predicate should have been called with {string}")
     public void thePredicateShouldHaveBeenCalledWith(String expectedTokenValue) {
-        verify(spyPredicate).test(expectedTokenValue);
+        verify(spyPredicate).test(argThat(jwt ->
+                (jwt != null) && expectedTokenValue.equals(jwt.getTokenValue())));
     }
 
     /**
      * Creates a mock JWT with specified token value.
      */
     private Jwt createMockJwtWithTokenValue(String tokenValue) {
-        var jwtBuilder = Jwt.withTokenValue(tokenValue != null
+        var jwtBuilder = Jwt.withTokenValue((tokenValue != null)
                         ? tokenValue
                         : "default-token")
                 .header("alg", "RS256")
@@ -232,24 +205,6 @@ public class RejectBlockedJwtSteps {
                 .thenReturn(jwt.getClaims());
 
         return mockJwt;
-    }
-
-    /**
-     * Data table representation for JWT blocking configuration.
-     */
-    @Value
-    @Builder
-    public static class BlockingConfig {
-
-        String tokenValue;
-
-        String username;
-        String id;
-
-        String expectedResult;
-        String blockedPattern;
-
-        boolean predicateResult;
     }
 
 }
